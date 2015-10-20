@@ -1,0 +1,6 @@
+[submodule "ifcopenshell"]
+	path = ifcopenshell
+	url = https://github.com/IfcOpenShell/IfcOpenShell.git
+[submodule "oce"]
+	path = oce
+	url = https://github.com/tpaviot/oce.git
