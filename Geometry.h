@@ -1,7 +1,7 @@
 /***************************************************************************
 # *
-# Copyright (c) 2015 *
-# Ling Ma <bitly.com/cvlingma> *
+# Copyright (c) 2015 * 
+# Ling Ma <bitly.com/cvlingma> * 
 # *
 # This program is free software; you can redistribute it and/or modify *
 # it under the terms of the GNU Lesser General Public License (LGPL) *
@@ -20,48 +20,28 @@
 # USA *
 # *
 # **************************************************************************/
+
 //
-// Created by ling on 22/10/15.
+// Created by ling on 27/10/15.
 //
 
-#ifndef EASTBIM_BIM_H
-#define EASTBIM_BIM_H
+#ifndef EASTBIM_GEOMETRY_H
+#define EASTBIM_GEOMETRY_H
 
 #include <boost/smart_ptr/shared_ptr.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
-#include <iostream>
-#include "ifcgeom/IfcGeomObjects.h"
-#include <BRepBuilderAPI_GTransform.hxx>
-#include <BRepBuilderAPI_Transform.hxx>
+#include "boost/ptr_container/ptr_vector.hpp"
 #include "TopoDS.hxx"
-#include "BRep_Builder.hxx"
-#include "boost/lexical_cast.hpp"
-#include "Geometry.h"
-
-
+#include <iostream>
+using namespace std;
 namespace EastBIM {
-    using namespace std;
-    class BldElement{
-    private:
-        Geometry::Ptr geomtool;
+    class Geometry {
     public:
-        typedef boost::shared_ptr<BldElement> Ptr;
+        typedef boost::shared_ptr<Geometry> Ptr;
         typedef vector<TopoDS_Shell> ShellSet;
-        int id;
-        string guid;
-        string name;
-        string type;
-        ShellSet shells;
-        TopoDS_Compound compound;
-        BldElement();
-        BldElement(int id, string guid, string name, string type, const IfcGeomObjects::IfcGeomShapeModelObject* o);
-    };
-    class BIM {
-    public:
-        typedef boost::shared_ptr<BIM> Ptr;
-        typedef boost::ptr_vector<BldElement> Element_set;
-        Element_set elements;
-        BIM();
+        Geometry();
+        bool GetShells(const TopoDS_Shape& brep, ShellSet& shells);
     };
 }
-#endif //EASTBIM_BIM_H
+
+
+#endif //EASTBIM_GEOMETRY_H

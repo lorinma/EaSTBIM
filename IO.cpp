@@ -25,60 +25,10 @@
 // Created by ling on 19/10/15.
 //
 
-#include <pcl/io/pcd_io.h>
 #include "IO.h"
 
 EastBIM::IO::IO() {
 
-}
-
-void EastBIM::IO::ReadPts(string filename,PointCloudPtr cloud) {
-    //Read pts File
-    ifstream inFile(filename, ios::in );
-    int count,intensity,r,g,b;
-    float px,py,pz;
-    inFile >> count;
-    while ( inFile >>  px >>  py >> pz >> intensity >> r >> g >> b ) //read each row
-    {
-        PointT basic_point;
-        basic_point.x = px;
-        basic_point.y = py;
-        basic_point.z = pz;
-        cloud->push_back(basic_point);
-    }
-    cloud->width = cloud->size();
-    cloud->height= 1;
-//    //Write to pcd file
-//    pcl::io::savePCDFileASCII ("convertedPCD.pcd", *cloud);
-    cerr <<count<<" points, Saved " << cloud->size () << " data points to convertedPCD.pcd." << endl;
-}
-
-void EastBIM::IO::ReadIfc(string filename) {
-    using namespace Ifc2x3;
-    IfcParse::IfcFile file;
-    if ( ! file.Init(filename) ) {
-        std::cout << "Unable to parse .ifc file" << std::endl;
-        return;
-    }
-    IfcBuildingElement::list elements = file.EntitiesByType<IfcBuildingElement>();
-
-    std::cout << "Found " << elements->Size() << " elements in " << filename << ":" << std::endl;
-
-    for ( IfcBuildingElement::it it = elements->begin(); it != elements->end(); ++ it ) {
-
-        const IfcBuildingElement::ptr element = *it;
-        std::cout << element->entity->toString() << std::endl;
-
-        if ( element->is(IfcWindow::Class()) ) {
-            const IfcWindow::ptr window = reinterpret_pointer_cast<IfcBuildingElement,IfcWindow>(element);
-
-            if ( window->hasOverallWidth() && window->hasOverallHeight() ) {
-                const double area = window->OverallWidth()*window->OverallHeight();
-                std::cout << "The area of this window is " << area << std::endl;
-            }
-        }
-
-    }
 }
 
 bool EastBIM::IO::LoadIfcModel(string filename, BIM::Ptr model){
@@ -130,4 +80,53 @@ void EastBIM::IO::IfcGeometrySetup() {
 //    "IfcOpeningElement Representations from their RelatingElements."
     IfcGeomObjects::Settings(IfcGeomObjects::DISABLE_OPENING_SUBTRACTIONS, false);
 
+}
+
+void EastBIM::IO::ReadPts(string filename,PointCloudPtr cloud) {
+    //Read pts File
+    ifstream inFile(filename, ios::in );
+    int count,intensity,r,g,b;
+    float px,py,pz;
+    inFile >> count;
+    while ( inFile >>  px >>  py >> pz >> intensity >> r >> g >> b ) //read each row
+    {
+        PointT basic_point;
+        basic_point.x = px;
+        basic_point.y = py;
+        basic_point.z = pz;
+        cloud->push_back(basic_point);
+    }
+    cloud->width = cloud->size();
+    cloud->height= 1;
+//    //Write to pcd file
+//    pcl::io::savePCDFileASCII ("convertedPCD.pcd", *cloud);
+    cerr <<count<<" points, Saved " << cloud->size () << " data points to convertedPCD.pcd." << endl;
+}
+
+void EastBIM::IO::ReadIfc(string filename) {
+    using namespace Ifc2x3;
+    IfcParse::IfcFile file;
+    if ( ! file.Init(filename) ) {
+        std::cout << "Unable to parse .ifc file" << std::endl;
+        return;
+    }
+    IfcBuildingElement::list elements = file.EntitiesByType<IfcBuildingElement>();
+
+    std::cout << "Found " << elements->Size() << " elements in " << filename << ":" << std::endl;
+
+    for ( IfcBuildingElement::it it = elements->begin(); it != elements->end(); ++ it ) {
+
+        const IfcBuildingElement::ptr element = *it;
+        std::cout << element->entity->toString() << std::endl;
+
+        if ( element->is(IfcWindow::Class()) ) {
+            const IfcWindow::ptr window = reinterpret_pointer_cast<IfcBuildingElement,IfcWindow>(element);
+
+            if ( window->hasOverallWidth() && window->hasOverallHeight() ) {
+                const double area = window->OverallWidth()*window->OverallHeight();
+                std::cout << "The area of this window is " << area << std::endl;
+            }
+        }
+
+    }
 }

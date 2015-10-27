@@ -22,6 +22,6 @@ add_library(IfcGeom SHARED ${IfcGeom_Source_File})
 target_link_libraries(IfcGeom IfcParse ${OCE_LIBRARIES})
 
 include_directories(./ifcopenshell/src)
-set(SOURCE_FILES main.cpp IO.cpp BIM.cpp)
+set(SOURCE_FILES main.cpp IO.cpp BIM.cpp Visualizer.cpp Visualizer.h Geometry.cpp Geometry.h)
 add_executable(EastBIM ${SOURCE_FILES})
 target_link_libraries(EastBIM ${PCL_LIBRARIES} IfcParse IfcGeom TKernel TKMath TKBRep TKGeomBase TKGeomAlgo TKG3d TKG2d TKShHealing TKTopAlgo TKMesh TKPrim TKBool TKBO TKFillet)

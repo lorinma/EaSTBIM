@@ -35,7 +35,7 @@ EastBIM::BldElement::BldElement() {
 }
 
 EastBIM::BldElement::BldElement(int id, string guid, string name, string type,
-                                const IfcGeomObjects::IfcGeomShapeModelObject *o):id(id),guid(guid),name(name),type(type){
+                                const IfcGeomObjects::IfcGeomShapeModelObject *o):id(id),guid(guid),name(name),type(type),geomtool(new Geometry){
     BRep_Builder builder;
     builder.MakeCompound(compound);
     int count =0;
@@ -44,7 +44,8 @@ EastBIM::BldElement::BldElement(int id, string guid, string name, string type,
         gp_Trsf trsf = it->Placement().Trsf();
         shape.Move(trsf);
 //        shapes.push_back(shape);
-        builder.Add(compound,shape);
+//        builder.Add(compound,shape);
+        geomtool->GetShells(shape,shells);
         count++;
     }
     if(count>=1)

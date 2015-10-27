@@ -1,7 +1,7 @@
 /***************************************************************************
 # *
-# Copyright (c) 2015 *
-# Ling Ma <bitly.com/cvlingma> *
+# Copyright (c) 2015 * 
+# Ling Ma <bitly.com/cvlingma> * 
 # *
 # This program is free software; you can redistribute it and/or modify *
 # it under the terms of the GNU Lesser General Public License (LGPL) *
@@ -22,36 +22,28 @@
 # **************************************************************************/
 
 //
-// Created by ling on 19/10/15.
+// Created by ling on 23/10/15.
 //
 
-#ifndef EASTBIM_IO_H
-#define EASTBIM_IO_H
+#include "Visualizer.h"
 
-#include "pcl/point_types.h"
-#include "pcl/point_cloud.h"
-#include <pcl/io/pcd_io.h>
-#include <iostream>
-#include <fstream>
-#include "ifcparse/IfcParse.h"
-#include "BIM.h"
-
-namespace EastBIM
-{
-    class IO {
-        typedef pcl::PointXYZ PointT;
-        typedef pcl::PointCloud<PointT> PointCloud;
-        typedef PointCloud::Ptr PointCloudPtr;
-        using std::ifstream;
-    public:
-        IO();
-        bool LoadIfcModel(string filename, BIM::Ptr model);
-        void IfcGeometrySetup();
-
-        void ReadPts(string filename, PointCloudPtr cloud);
-        void ReadIfc(string filename);
-    };
+string EastBIM::Visualizer::GUID() {
+    stringstream s;
+    s << boost::uuids::random_generator()();
+    return s.str();
 }
 
+template<typename PointT>
+bool EastBIM::Visualizer::addPointCloudColor(const typename pcl::PointCloud<PointT>::ConstPtr cloud, double r, double g,
+                                             double b, double size, string name, int viewport) {
+    if (!name.length())
+        name = GUID();
+    setBackgroundColor(255, 255, 255);
+    pcl::visualization::PointCloudColorHandlerCustom<PointT> color(cloud, r, g, b);
+    addPointCloud<PointT>(cloud, color, name, viewport);
+    return setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, size, name, viewport);
+}
 
-#endif //EASTBIM_IO_H
+EastBIM::Visualizer::Visualizer() {
+
+}
