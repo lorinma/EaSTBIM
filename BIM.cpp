@@ -20,36 +20,38 @@
 # USA *
 # *
 # **************************************************************************/
+
 //
-// Created by ling on 22/10/15.
+// Created by ling on 30/10/15.
 //
 
 #include "BIM.h"
 
-EastBIM::BIM::BIM() {
+BIM::BIM() {
 
 }
 
-EastBIM::BldElement::BldElement() {
+BldElement::BldElement() {
 
 }
 
-EastBIM::BldElement::BldElement(int id, string guid, string name, string type,
-                                const IfcGeomObjects::IfcGeomShapeModelObject *o):id(id),guid(guid),name(name),type(type),geomtool(new Geometry){
+BldElement::BldElement(int id, string guid, string name, string type,
+                       const IfcGeomObjects::IfcGeomShapeModelObject *o):id(id),guid(guid),name(name),type(type),geomtool(new Geometry){
     BRep_Builder builder;
-    builder.MakeCompound(compound);
-    int count =0;
+    builder.MakeCompound(shape);
     for (IfcGeom::IfcRepresentationShapeItems::const_iterator it = o->mesh().begin(); it != o->mesh().end(); ++ it) {
-        TopoDS_Shape shape = it->Shape();
+        TopoDS_Shape brep = it->Shape();
         gp_Trsf trsf = it->Placement().Trsf();
-        shape.Move(trsf);
-//        shapes.push_back(shape);
-//        builder.Add(compound,shape);
-        geomtool->GetShells(shape,shells);
-        count++;
+        brep.Move(trsf);
+//        FIXME are the shells in the shape fixed by ifcopenshell?
+        builder.Add(shape,brep);
     }
-    if(count>=1)
-        cout<<"element: "<<boost::lexical_cast<string>(id)<<" has "<<boost::lexical_cast<string>(count)<<" solids"<<endl;
-    if(count < 1)
-        cout<<"error! no solid is found in this building element"<<endl;
+}
+
+bool BldElement::GetShells(Geometry::ShellSet &shells) {
+    return geomtool->GetShells(shape,shells);
+}
+
+bool BldElement::GetFaces(Geometry::FaceSet &faces) {
+    return geomtool->GetFaces(shape,faces);
 }

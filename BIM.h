@@ -20,48 +20,40 @@
 # USA *
 # *
 # **************************************************************************/
+
 //
-// Created by ling on 22/10/15.
+// Created by ling on 30/10/15.
 //
 
 #ifndef EASTBIM_BIM_H
 #define EASTBIM_BIM_H
 
-#include <boost/smart_ptr/shared_ptr.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
-#include <iostream>
-#include "ifcgeom/IfcGeomObjects.h"
-#include <BRepBuilderAPI_GTransform.hxx>
-#include <BRepBuilderAPI_Transform.hxx>
-#include "TopoDS.hxx"
-#include "BRep_Builder.hxx"
-#include "boost/lexical_cast.hpp"
 #include "Geometry.h"
+#include <ifcgeom/IfcGeomObjects.h>
+#include <BRep_Builder.hxx>
+
+class BldElement{
+private:
+    Geometry::Ptr geomtool;
+public:
+    typedef boost::shared_ptr<BldElement> Ptr;
+    int id;
+    string guid;
+    string name;
+    string type;
+    TopoDS_Compound shape;
+    BldElement();
+    BldElement(int id, string guid, string name, string type, const IfcGeomObjects::IfcGeomShapeModelObject* o);
+    bool GetShells(Geometry::ShellSet& shells);
+    bool GetFaces(Geometry::FaceSet& faces);
+};
+class BIM {
+public:
+    typedef boost::shared_ptr<BIM> Ptr;
+    typedef boost::ptr_vector<BldElement> Element_set;
+    Element_set elements;
+    BIM();
+};
 
 
-namespace EastBIM {
-    using namespace std;
-    class BldElement{
-    private:
-        Geometry::Ptr geomtool;
-    public:
-        typedef boost::shared_ptr<BldElement> Ptr;
-        typedef vector<TopoDS_Shell> ShellSet;
-        int id;
-        string guid;
-        string name;
-        string type;
-        ShellSet shells;
-        TopoDS_Compound compound;
-        BldElement();
-        BldElement(int id, string guid, string name, string type, const IfcGeomObjects::IfcGeomShapeModelObject* o);
-    };
-    class BIM {
-    public:
-        typedef boost::shared_ptr<BIM> Ptr;
-        typedef boost::ptr_vector<BldElement> Element_set;
-        Element_set elements;
-        BIM();
-    };
-}
 #endif //EASTBIM_BIM_H

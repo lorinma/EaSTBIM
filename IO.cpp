@@ -22,39 +22,16 @@
 # **************************************************************************/
 
 //
-// Created by ling on 19/10/15.
+// Created by ling on 30/10/15.
 //
 
 #include "IO.h"
 
-EastBIM::IO::IO() {
+IO::IO() {
 
 }
 
-bool EastBIM::IO::LoadIfcModel(string filename, BIM::Ptr model){
-    IfcGeometrySetup();
-    static std::stringstream log_stream;
-    // Parse the file supplied in argv[1]. Returns true on succes.
-    if ( ! IfcGeomObjects::Init(filename, &std::cout, &log_stream) ) {
-        Logger::Message(Logger::LOG_ERROR, "Unable to parse .ifc file or no geometrical entities found");
-        return false;
-    }
-
-    // The functions IfcGeomObjects::Get() and IfcGeomObjects::Next() wrap an iterator of all geometrical entities in the Ifc file.
-    // IfcGeomObjects::Get() returns an IfcGeomObjects::IfcGeomObject (see IfcGeomObjects.h for definition)
-    // IfcGeomObjects::Next() is used to poll whether more geometrical entities are available
-    do {
-        const IfcGeomObjects::IfcObject* geom_object = IfcGeomObjects::GetShapeModel();
-//        int id=geom_object->id();
-//        string guid = geom_object->guid();
-//        string name = geom_object->name();
-//        string type = geom_object->type();
-        model->elements.push_back(new BldElement(geom_object->id(),geom_object->guid(),geom_object->name(),geom_object->type(),static_cast<const IfcGeomObjects::IfcGeomShapeModelObject*>(geom_object)));
-    } while (IfcGeomObjects::Next());
-    return true;
-}
-
-void EastBIM::IO::IfcGeometrySetup() {
+void IO::IfcGeometrySetup() {
 //    "Specifies whether to apply the local placements of building elements "
 //    "directly to the coordinates of the representation mesh rather than "
 //    "to represent the local placement in the 4x3 matrix, which will in that "
@@ -79,54 +56,27 @@ void EastBIM::IO::IfcGeometrySetup() {
 //    "Specifies whether to disable the boolean subtraction of "
 //    "IfcOpeningElement Representations from their RelatingElements."
     IfcGeomObjects::Settings(IfcGeomObjects::DISABLE_OPENING_SUBTRACTIONS, false);
-
 }
 
-void EastBIM::IO::ReadPts(string filename,PointCloudPtr cloud) {
-    //Read pts File
-    ifstream inFile(filename, ios::in );
-    int count,intensity,r,g,b;
-    float px,py,pz;
-    inFile >> count;
-    while ( inFile >>  px >>  py >> pz >> intensity >> r >> g >> b ) //read each row
-    {
-        PointT basic_point;
-        basic_point.x = px;
-        basic_point.y = py;
-        basic_point.z = pz;
-        cloud->push_back(basic_point);
+bool IO::LoadIfcModel(string filename, BIM::Ptr model) {
+    IfcGeometrySetup();
+    static std::stringstream log_stream;
+    // Parse the file supplied in argv[1]. Returns true on succes.
+    if ( ! IfcGeomObjects::Init(filename, &std::cout, &log_stream) ) {
+        Logger::Message(Logger::LOG_ERROR, "Unable to parse .ifc file or no geometrical entities found");
+        return false;
     }
-    cloud->width = cloud->size();
-    cloud->height= 1;
-//    //Write to pcd file
-//    pcl::io::savePCDFileASCII ("convertedPCD.pcd", *cloud);
-    cerr <<count<<" points, Saved " << cloud->size () << " data points to convertedPCD.pcd." << endl;
-}
 
-void EastBIM::IO::ReadIfc(string filename) {
-    using namespace Ifc2x3;
-    IfcParse::IfcFile file;
-    if ( ! file.Init(filename) ) {
-        std::cout << "Unable to parse .ifc file" << std::endl;
-        return;
-    }
-    IfcBuildingElement::list elements = file.EntitiesByType<IfcBuildingElement>();
-
-    std::cout << "Found " << elements->Size() << " elements in " << filename << ":" << std::endl;
-
-    for ( IfcBuildingElement::it it = elements->begin(); it != elements->end(); ++ it ) {
-
-        const IfcBuildingElement::ptr element = *it;
-        std::cout << element->entity->toString() << std::endl;
-
-        if ( element->is(IfcWindow::Class()) ) {
-            const IfcWindow::ptr window = reinterpret_pointer_cast<IfcBuildingElement,IfcWindow>(element);
-
-            if ( window->hasOverallWidth() && window->hasOverallHeight() ) {
-                const double area = window->OverallWidth()*window->OverallHeight();
-                std::cout << "The area of this window is " << area << std::endl;
-            }
-        }
-
-    }
+    // The functions IfcGeomObjects::Get() and IfcGeomObjects::Next() wrap an iterator of all geometrical entities in the Ifc file.
+    // IfcGeomObjects::Get() returns an IfcGeomObjects::IfcGeomObject (see IfcGeomObjects.h for definition)
+    // IfcGeomObjects::Next() is used to poll whether more geometrical entities are available
+    do {
+        const IfcGeomObjects::IfcObject* geom_object = IfcGeomObjects::GetShapeModel();
+//        int id=geom_object->id();
+//        string guid = geom_object->guid();
+//        string name = geom_object->name();
+//        string type = geom_object->type();
+        model->elements.push_back(new BldElement(geom_object->id(),geom_object->guid(),geom_object->name(),geom_object->type(),static_cast<const IfcGeomObjects::IfcGeomShapeModelObject*>(geom_object)));
+    } while (IfcGeomObjects::Next());
+    return true;
 }

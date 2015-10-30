@@ -27,17 +27,19 @@
 
 #include "IO.h"
 #include "Visualizer.h"
-using namespace Ifc2x3;
 int main (int argc, char** argv)
 {
-    EastBIM::IO data;
-    EastBIM::BIM::Ptr bim(new EastBIM::BIM);
+    IO data;
+    BIM::Ptr bim(new BIM);
     data.LoadIfcModel("IfcOpenHouse.ifc",bim);
 
 
 //    PointCloudPtr cloud(new PointCloud);
 //    data.ReadPts("damaged beam.pts",cloud);
-//    EastBIM::Visualizer viewer;
+    Visualizer viewer;
+    for (BIM::Element_set::iterator it=bim->elements.begin();it!=bim->elements.end();++it)
+        viewer.AddTopoShapeWithProperty(it->shape);
+    viewer.spin();
 //    viewer.addPointCloudColor<pcl::PointXYZ>(cloud);
 //    data.ReadIfc("house.ifc");
 }

@@ -1,7 +1,7 @@
 /***************************************************************************
 # *
-# Copyright (c) 2015 * 
-# Ling Ma <bitly.com/cvlingma> * 
+# Copyright (c) 2015 *
+# Ling Ma <bitly.com/cvlingma> *
 # *
 # This program is free software; you can redistribute it and/or modify *
 # it under the terms of the GNU Lesser General Public License (LGPL) *
@@ -22,28 +22,18 @@
 # **************************************************************************/
 
 //
-// Created by ling on 23/10/15.
+// Created by ling on 30/10/15.
 //
 
 #include "Visualizer.h"
 
-string EastBIM::Visualizer::GUID() {
+Visualizer::Visualizer():geomtool(new Geometry) {
+
+}
+
+string Visualizer::GUID() {
     stringstream s;
     s << boost::uuids::random_generator()();
     return s.str();
 }
 
-template<typename PointT>
-bool EastBIM::Visualizer::addPointCloudColor(const typename pcl::PointCloud<PointT>::ConstPtr cloud, double r, double g,
-                                             double b, double size, string name, int viewport) {
-    if (!name.length())
-        name = GUID();
-    setBackgroundColor(255, 255, 255);
-    pcl::visualization::PointCloudColorHandlerCustom<PointT> color(cloud, r, g, b);
-    addPointCloud<PointT>(cloud, color, name, viewport);
-    return setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, size, name, viewport);
-}
-
-EastBIM::Visualizer::Visualizer() {
-
-}

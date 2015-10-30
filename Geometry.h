@@ -1,7 +1,7 @@
 /***************************************************************************
 # *
-# Copyright (c) 2015 * 
-# Ling Ma <bitly.com/cvlingma> * 
+# Copyright (c) 2015 *
+# Ling Ma <bitly.com/cvlingma> *
 # *
 # This program is free software; you can redistribute it and/or modify *
 # it under the terms of the GNU Lesser General Public License (LGPL) *
@@ -22,26 +22,50 @@
 # **************************************************************************/
 
 //
-// Created by ling on 27/10/15.
+// Created by ling on 30/10/15.
 //
 
 #ifndef EASTBIM_GEOMETRY_H
 #define EASTBIM_GEOMETRY_H
 
-#include <boost/smart_ptr/shared_ptr.hpp>
-#include "boost/ptr_container/ptr_vector.hpp"
-#include "TopoDS.hxx"
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Compound.hxx>
+#include <boost/shared_ptr.hpp>
+#include <boost/ptr_container/ptr_vector.hpp>
 #include <iostream>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <ShapeFix_Shell.hxx>
+#include <boost/lexical_cast.hpp>
+#include <pcl/geometry/planar_polygon.h>
+#include <pcl/point_types.h>
+#include <pcl/point_cloud.h>
+#include <TopoDS_Face.hxx>
+#include <BRepTools_WireExplorer.hxx>
+#include <gp_Pnt.hxx>
+#include <BRep_Tool.hxx>
+
 using namespace std;
-namespace EastBIM {
-    class Geometry {
-    public:
-        typedef boost::shared_ptr<Geometry> Ptr;
-        typedef vector<TopoDS_Shell> ShellSet;
-        Geometry();
-        bool GetShells(const TopoDS_Shape& brep, ShellSet& shells);
-    };
-}
+
+class Geometry {
+public:
+    typedef pcl::PointXYZ PointT;
+    typedef pcl::PointCloud<PointT> PointCloud;
+    typedef PointCloud::Ptr PointCloudPtr;
+    typedef boost::shared_ptr<Geometry> Ptr;
+    typedef boost::ptr_vector<TopoDS_Shell> ShellSet;
+    typedef boost::ptr_vector<TopoDS_Face> FaceSet;
+    typedef boost::ptr_vector<TopoDS_Vertex> VertexSet;
+    typedef boost::ptr_vector<pcl::PlanarPolygon<PointT> > PolySet;
+
+    Geometry();
+    bool GetShells(const TopoDS_Shape &brep, ShellSet &shells);
+    bool GetFaces(const TopoDS_Shape &brep, FaceSet &faces);
+    bool GetVertices(const TopoDS_Shape &brep, VertexSet &vertices);
+    void Vertex2Point(const TopoDS_Vertex &v, PointT& p);
+    void Face2Polygon(const TopoDS_Face& f, pcl::PlanarPolygon<PointT>& poly);
+    void Shape2Polygons(const TopoDS_Shape& s, PolySet& polys);
+};
 
 
 #endif //EASTBIM_GEOMETRY_H

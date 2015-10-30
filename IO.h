@@ -22,36 +22,21 @@
 # **************************************************************************/
 
 //
-// Created by ling on 19/10/15.
+// Created by ling on 30/10/15.
 //
 
 #ifndef EASTBIM_IO_H
 #define EASTBIM_IO_H
 
-#include "pcl/point_types.h"
-#include "pcl/point_cloud.h"
-#include <pcl/io/pcd_io.h>
-#include <iostream>
-#include <fstream>
-#include "ifcparse/IfcParse.h"
 #include "BIM.h"
 
-namespace EastBIM
-{
-    class IO {
-        typedef pcl::PointXYZ PointT;
-        typedef pcl::PointCloud<PointT> PointCloud;
-        typedef PointCloud::Ptr PointCloudPtr;
-        using std::ifstream;
-    public:
-        IO();
-        bool LoadIfcModel(string filename, BIM::Ptr model);
-        void IfcGeometrySetup();
+class IO {
+public:
 
-        void ReadPts(string filename, PointCloudPtr cloud);
-        void ReadIfc(string filename);
-    };
-}
+    IO();
+    bool LoadIfcModel(string filename, BIM::Ptr model);
+    void IfcGeometrySetup();
+};
 
 
 #endif //EASTBIM_IO_H
