@@ -80,3 +80,29 @@ bool IO::LoadIfcModel(string filename, BIM::Ptr model) {
     } while (IfcGeomObjects::Next());
     return true;
 }
+
+bool IO::GetParas(boost::ptr_vector<string> &list, const int &sheetInx, const int &column) {
+    string filename="parameters.xls";
+    ExcelFormat::BasicExcel xls;
+    if(!xls.Load(filename.c_str()))
+        return false;
+    assert(xls.GetTotalWorkSheets()>sheetInx);
+    ExcelFormat::BasicExcelWorksheet *sheet=xls.GetWorksheet(sheetInx);
+    int paraCount=sheet->GetTotalRows();
+    if(paraCount<1)
+        return false;
+    bool hasValue=false;
+    //skip the header
+    for (int i=1;i<paraCount;i++){
+        const char* value=sheet->Cell(i,column)->GetString();
+        if(value==NULL)//only return continuous content
+            break;
+        list.push_back(new string(value));
+        hasValue=true;
+    }
+    return hasValue;
+}
+
+bool IO::GetIfcFiles(boost::ptr_vector<string> &list) {
+    return GetParas(list,0,0);
+}

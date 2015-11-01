@@ -30,9 +30,10 @@
 int main (int argc, char** argv)
 {
     IO data;
+    boost::ptr_vector<string> ifcfiles;
+    data.GetIfcFiles(ifcfiles);
     BIM::Ptr bim(new BIM);
-    data.LoadIfcModel("IfcOpenHouse.ifc",bim);
-
+    data.LoadIfcModel(ifcfiles.at(0),bim);
 
 //    PointCloudPtr cloud(new PointCloud);
 //    data.ReadPts("damaged beam.pts",cloud);

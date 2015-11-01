@@ -29,11 +29,14 @@
 #define EASTBIM_IO_H
 
 #include "BIM.h"
+#include "excel/ExcelFormat.h"
 
 class IO {
+private:
+    bool GetParas(boost::ptr_vector<string>& list,const int& sheetInx, const int& column);
 public:
-
     IO();
+    bool GetIfcFiles(boost::ptr_vector<string>& list);
     bool LoadIfcModel(string filename, BIM::Ptr model);
     void IfcGeometrySetup();
 };

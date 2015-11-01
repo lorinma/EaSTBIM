@@ -2,6 +2,13 @@ cmake_minimum_required(VERSION 3.0)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 project(EaSTBIM)
 
+ADD_LIBRARY(Excel STATIC
+        excel/BasicExcel.cpp
+        excel/BasicExcel.hpp
+        excel/ExcelFormat.cpp
+        excel/ExcelFormat.h
+)
+
 #compile ifcparse
 file(GLOB IfcParse_Source_File ./ifcopenshell/src/ifcparse/*.cpp)
 add_library(IfcParse SHARED ${IfcParse_Source_File})
@@ -24,4 +31,4 @@ link_directories(${PCL_LIBRARY_DIRS})
 include_directories(./ifcopenshell/src)
 set(SOURCE_FILES main.cpp IO.cpp IO.h BIM.cpp BIM.h Geometry.cpp Geometry.h Visualizer.cpp Visualizer.h)
 add_executable(EastBIM ${SOURCE_FILES})
-target_link_libraries(EastBIM ${PCL_LIBRARIES} IfcParse IfcGeom TKernel TKMath TKBRep TKGeomBase TKGeomAlgo TKG3d TKG2d TKShHealing TKTopAlgo TKMesh TKPrim TKBool TKBO TKFillet)
+target_link_libraries(EastBIM ${PCL_LIBRARIES} IfcParse IfcGeom TKernel TKMath TKBRep TKGeomBase TKGeomAlgo TKG3d TKG2d TKShHealing TKTopAlgo TKMesh TKPrim TKBool TKBO TKFillet Excel)

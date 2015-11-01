@@ -46,7 +46,7 @@
 #include <BRep_Tool.hxx>
 
 using namespace std;
-
+//TODO get bounding box
 class Geometry {
 public:
     typedef pcl::PointXYZ PointT;
