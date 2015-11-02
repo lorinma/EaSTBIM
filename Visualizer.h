@@ -60,6 +60,15 @@ public:
             AddPolygonWithProperty(*it,r,g,b,size,name,viewport);
         }
     }
+
+    bool AddBoxWithProperty(const Box& shape, double r=0.0, double g=0.0, double b=0.0, double size=1.0, string name="",int viewport=0){
+        if (!name.length())
+            name=GUID();
+        setBackgroundColor(255,255,255);
+        this->addCube(shape.centroid,shape.quanternion,shape.width,shape.height,shape.depth,name,viewport);
+        this->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR,r,g,b,name,viewport);
+        return this->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_LINE_WIDTH, size, name,viewport);
+    }
 };
 
 

@@ -44,9 +44,19 @@
 #include <BRepTools_WireExplorer.hxx>
 #include <gp_Pnt.hxx>
 #include <BRep_Tool.hxx>
+#include "ApproxMVBB/ComputeApproxMVBB.hpp"
 
 using namespace std;
-//TODO get bounding box
+class Box {
+public:
+    Eigen::Quaternionf quanternion;
+    Eigen::Vector3f centroid;
+    double width;
+    double height;
+    double depth;
+    Box();
+};
+
 class Geometry {
 public:
     typedef pcl::PointXYZ PointT;
@@ -65,6 +75,8 @@ public:
     void Vertex2Point(const TopoDS_Vertex &v, PointT& p);
     void Face2Polygon(const TopoDS_Face& f, pcl::PlanarPolygon<PointT>& poly);
     void Shape2Polygons(const TopoDS_Shape& s, PolySet& polys);
+    bool GetMVBB(const VertexSet &vertices, Box& box);
+    bool GetMVBB(const TopoDS_Shape &brep, Box& box);
 };
 
 

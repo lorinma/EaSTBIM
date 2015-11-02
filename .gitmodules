@@ -7,3 +7,9 @@
 [submodule "pcl"]
 	path = pcl
 	url = https://github.com/PointCloudLibrary/pcl.git
+[submodule "pugixml"]
+	path = pugixml
+	url = https://github.com/zeux/pugixml.git
+[submodule "ApproxMVBB"]
+	path = ApproxMVBB
+	url = https://github.com/gabyx/ApproxMVBB.git

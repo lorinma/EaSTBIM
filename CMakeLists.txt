@@ -22,6 +22,9 @@ file(GLOB IfcGeom_Source_File ./ifcopenshell/src/ifcgeom/*.cpp)
 add_library(IfcGeom SHARED ${IfcGeom_Source_File})
 target_link_libraries(IfcGeom IfcParse ${OCE_LIBRARIES})
 
+find_package(ApproxMVBB)
+include_directories(${ApproxMVBB_INCLUDE_DIRS})
+
 #link pcl
 find_package(PCL 1.7 REQUIRED)
 include_directories(${PCL_INCLUDE_DIRS})
@@ -31,4 +34,4 @@ link_directories(${PCL_LIBRARY_DIRS})
 include_directories(./ifcopenshell/src)
 set(SOURCE_FILES main.cpp IO.cpp IO.h BIM.cpp BIM.h Geometry.cpp Geometry.h Visualizer.cpp Visualizer.h)
 add_executable(EastBIM ${SOURCE_FILES})
-target_link_libraries(EastBIM ${PCL_LIBRARIES} IfcParse IfcGeom TKernel TKMath TKBRep TKGeomBase TKGeomAlgo TKG3d TKG2d TKShHealing TKTopAlgo TKMesh TKPrim TKBool TKBO TKFillet Excel)
+target_link_libraries(EastBIM ${PCL_LIBRARIES} ${ApproxMVBB_LIBRARY_REL} ${ApproxMVBB_LIBRARY_DGB} ${ApproxMVBB_LIBRARIES} IfcParse IfcGeom TKernel TKMath TKBRep TKGeomBase TKGeomAlgo TKG3d TKG2d TKShHealing TKTopAlgo TKMesh TKPrim TKBool TKBO TKFillet Excel)

@@ -38,8 +38,8 @@ bool Geometry::GetShells(const TopoDS_Shape &brep, Geometry::ShellSet &shells) {
         shells.at(shells.size()-1)= TopoDS::Shell(Ex.Current());
         count++;
     }
-    if(count>=1)
-        cout<<"element: has "<<boost::lexical_cast<string>(count)<<" shells"<<endl;
+//    if(count>=1)
+//        cout<<"element: has "<<boost::lexical_cast<string>(count)<<" shells"<<endl;
     if(count < 1)
         cout<<"error! no shell is found in this building element"<<endl;
     return count>0;
@@ -53,8 +53,8 @@ bool Geometry::GetFaces(const TopoDS_Shape &brep, Geometry::FaceSet &faces) {
         faces.at(faces.size()-1)= TopoDS::Face(Ex.Current());
         count++;
     }
-    if(count>=1)
-        cout<<"element: has "<<boost::lexical_cast<string>(count)<<" faces"<<endl;
+//    if(count>=1)
+//        cout<<"element: has "<<boost::lexical_cast<string>(count)<<" faces"<<endl;
     if(count < 1)
         cout<<"error! no face is found in this building element"<<endl;
     return count>0;
@@ -73,8 +73,8 @@ bool Geometry::GetVertices(const TopoDS_Shape &brep, Geometry::VertexSet &vertic
             count++;
         }
     }
-    if(count>=1)
-        cout<<"element: has "<<boost::lexical_cast<string>(count)<<" vertices"<<endl;
+//    if(count>=1)
+//        cout<<"element: has "<<boost::lexical_cast<string>(count)<<" vertices"<<endl;
     if(count < 1)
         cout<<"error! no vertex is found in this building element"<<endl;
     return count>0;
@@ -102,7 +102,7 @@ void Geometry::Face2Polygon(const TopoDS_Face &f, pcl::PlanarPolygon<PointT>& po
 }
 
 void Geometry::Shape2Polygons(const TopoDS_Shape &s, Geometry::PolySet &polys) {
-FaceSet faces;
+    FaceSet faces;
     GetFaces(s,faces);
     pcl::PlanarPolygon<PointT> poly;
     for (FaceSet::iterator it = faces.begin();it!=faces.end();++it) {
@@ -110,4 +110,54 @@ FaceSet faces;
         Face2Polygon(*it,poly);
         polys.at(polys.size()-1)=poly;
     }
+}
+
+bool Geometry::GetMVBB(const Geometry::VertexSet &vertices, Box &box) {
+    ApproxMVBB::Vector3List v;
+    for (Geometry::VertexSet::const_iterator it = vertices.begin(); it!=vertices.end();++it){
+        pcl::PointXYZ p;
+        Vertex2Point(*it,p);
+        v.emplace_back(p.x,p.y,p.z);
+    }
+    ApproxMVBB::Matrix3Dyn points(3,v.size());
+    for(int i=0;i<v.size();i++)
+        points.col(i)=v[i];
+    //NOTE parameters see:https://github.com/gabyx/ApproxMVBB
+    ApproxMVBB::OOBB oobb = ApproxMVBB::approximateMVBB(points,0.001,8,5,0,5);
+    Eigen::Vector3f centroid(
+            (const float &) ((oobb.m_minPoint.x()+oobb.m_maxPoint.x())/2),
+            (const float &) ((oobb.m_minPoint.y()+oobb.m_maxPoint.y())/2),
+            (const float &) ((oobb.m_minPoint.z()+oobb.m_maxPoint.z())/2));
+    //upper/lower point in OOBB frame
+    double width = oobb.m_maxPoint.x()-oobb.m_minPoint.x();
+    double height = oobb.m_maxPoint.y()-oobb.m_minPoint.y();
+    double depth = oobb.m_maxPoint.z()-oobb.m_minPoint.z();
+    if (width<=0 || height<=0 ||depth<=0)
+        return false;
+//    coordinate transformation A_IK matrix from OOBB frame K to world frame I
+    Eigen::Quaternionf q;
+    q.x()= (float) oobb.m_q_KI.x();
+    q.y()= (float) oobb.m_q_KI.y();
+    q.z()= (float) oobb.m_q_KI.z();
+    q.w()= (float) oobb.m_q_KI.w();
+    centroid=q.matrix()*centroid;
+//    a translation to apply to the cube from 0,0,0
+    box.centroid=centroid;
+//    a quaternion-based rotation to apply to the cube
+    box.quanternion=q.inverse();
+    box.depth=depth;
+    box.height=height;
+    box.width=width;
+    return true;
+}
+
+Box::Box() {
+
+}
+
+bool Geometry::GetMVBB(const TopoDS_Shape &brep, Box &box) {
+    VertexSet vertices;
+    if (GetVertices(brep,vertices)== false)
+        return false;
+    return GetMVBB(vertices,box);
 }

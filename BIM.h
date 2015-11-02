@@ -46,6 +46,8 @@ public:
     BldElement(int id, string guid, string name, string type, const IfcGeomObjects::IfcGeomShapeModelObject* o);
     bool GetShells(Geometry::ShellSet& shells);
     bool GetFaces(Geometry::FaceSet& faces);
+    bool GetVertices(Geometry::VertexSet& vertices);
+    bool GetMVBB(Box& box);
 };
 class BIM {
 public:

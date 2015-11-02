@@ -55,3 +55,11 @@ bool BldElement::GetShells(Geometry::ShellSet &shells) {
 bool BldElement::GetFaces(Geometry::FaceSet &faces) {
     return geomtool->GetFaces(shape,faces);
 }
+
+bool BldElement::GetVertices(Geometry::VertexSet& vertices) {
+    return geomtool->GetVertices(shape,vertices);
+}
+
+bool BldElement::GetMVBB(Box &box) {
+    return geomtool->GetMVBB(shape,box);
+}

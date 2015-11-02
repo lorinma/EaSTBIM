@@ -35,12 +35,18 @@ int main (int argc, char** argv)
     BIM::Ptr bim(new BIM);
     data.LoadIfcModel(ifcfiles.at(0),bim);
 
+    Visualizer viewer;
+    for (BIM::Element_set::iterator it=bim->elements.begin();it!=bim->elements.end();++it){
+        Box box;
+        it->GetMVBB(box);
+        viewer.AddTopoShapeWithProperty(it->shape);
+        viewer.AddBoxWithProperty(box,255);
+    }
+    viewer.spin();
+
 //    PointCloudPtr cloud(new PointCloud);
 //    data.ReadPts("damaged beam.pts",cloud);
-    Visualizer viewer;
-    for (BIM::Element_set::iterator it=bim->elements.begin();it!=bim->elements.end();++it)
-        viewer.AddTopoShapeWithProperty(it->shape);
-    viewer.spin();
 //    viewer.addPointCloudColor<pcl::PointXYZ>(cloud);
+
 //    data.ReadIfc("house.ifc");
 }
