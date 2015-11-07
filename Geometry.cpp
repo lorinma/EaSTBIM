@@ -25,6 +25,7 @@
 // Created by ling on 30/10/15.
 //
 
+
 #include "Geometry.h"
 Geometry::Geometry() {
 
@@ -160,4 +161,41 @@ bool Geometry::GetMVBB(const TopoDS_Shape &brep, Box &box) {
     if (GetVertices(brep,vertices)== false)
         return false;
     return GetMVBB(vertices,box);
+}
+
+void Geometry::Face2BVHMesh(const TopoDS_Face &face, BVHMeshPtr model) {
+    TopLoc_Location loc;
+    Handle_Poly_Triangulation tri = BRep_Tool::Triangulation(face,loc);
+    if ( ! tri.IsNull() ) {
+        const TColgp_Array1OfPnt& nodes = tri->Nodes();
+// set mesh triangles and vertice indices
+        std::vector<fcl::Vec3f> vertices;
+        //index from 1
+        for (int i=1;i<=nodes.Length();i++){
+            fcl::Vec3f v(nodes(i).X(),nodes(i).Y(),nodes(i).Z());
+            vertices.push_back(v);
+        }
+        const Poly_Array1OfTriangle& triangleInices = tri->Triangles();
+// code to set the vertices and triangles
+        std::vector<fcl::Triangle> triangles;
+        for (int i=1;i<=triangleInices.Length();i++){
+            int i1=0, i2=0, i3=0;
+            triangleInices(i).Get(i1,i2,i3);
+            fcl::Triangle t(i1,i2,i3);
+            triangles.push_back(t);
+        }
+        model->addSubModel(vertices, triangles);
+    }
+
+}
+
+void Geometry::Shape2BVHMesh(const TopoDS_Shape &shape, BVHMeshPtr model) {
+    model->beginModel();
+    BRepMesh_IncrementalMesh(shape, IfcGeom::GetValue(IfcGeom::GV_DEFLECTION_TOLERANCE));
+    FaceSet faces;
+    GetFaces(shape,faces);
+    for (auto face=faces.begin();face!=faces.end();++face){
+        Face2BVHMesh(*face,model);
+    }
+    model->endModel();
 }

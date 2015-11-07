@@ -40,7 +40,7 @@ include_directories(${OCTOMAP_INCLUDE_DIRS} ${CCD_INCLUDE_DIRS} ${FCL_INCLUDE_DI
 link_directories(${OCTOMAP_LIBRARY_DIRS} ${CCD_LIBRARY_DIRS} ${FCL_LIBRARY_DIRS})
 
 include_directories(./ifcopenshell/src)
-set(SOURCE_FILES main.cpp IO.cpp IO.h BIM.cpp BIM.h Geometry.cpp Geometry.h Visualizer.cpp Visualizer.h)
+set(SOURCE_FILES main.cpp IO.cpp IO.h BIM.cpp BIM.h Geometry.cpp Geometry.h Visualizer.cpp Visualizer.h Topology.cpp Topology.h Transform.cpp Transform.h)
 add_executable(EastBIM ${SOURCE_FILES})
 target_link_libraries(EastBIM ${OCTOMAP_LIBRARIES} ${CCD_LIBRARIES} ${FCL_LIBRARIES} ${PCL_LIBRARIES} ${ApproxMVBB_LIBRARY_REL} ${FCL_LIBRARIES} ${ApproxMVBB_LIBRARY_DGB} ${ApproxMVBB_LIBRARIES} IfcParse IfcGeom TKernel TKMath TKBRep TKGeomBase TKGeomAlgo TKG3d TKG2d TKShHealing TKTopAlgo TKMesh TKPrim TKBool TKBO TKFillet Excel)
 

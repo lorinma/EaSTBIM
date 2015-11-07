@@ -22,39 +22,19 @@
 # **************************************************************************/
 
 //
-// Created by ling on 19/10/15.
+// Created by ling on 07/11/15.
 //
 
-#include "IO.h"
-#include "Visualizer.h"
-#include "Topology.h"
+#ifndef EASTBIM_TRANSFORM_H
+#define EASTBIM_TRANSFORM_H
 
-using namespace std;
-int main (int argc, char** argv)
-{
-    IO data;
-    boost::ptr_vector<string> ifcfiles;
-    data.GetIfcFiles(ifcfiles);
-    BIM::Ptr bim(new BIM);
-    data.LoadIfcModel(ifcfiles.at(0),bim);
-
-    Topology::Ptr topo(new Topology);
-    cout<<topo->Collide(bim->elements.at(0).shape,bim->elements.at(0).shape);
-
-//    Visualizer viewer;
-//    for (BIM::Element_set::iterator it=bim->elements.begin();it!=bim->elements.end();++it){
-//        Box box;
-//        it->GetMVBB(box);
-//        viewer.AddTopoShapeWithProperty(it->shape);
-//        viewer.AddBoxWithProperty(box,255);
-//    }
-//    viewer.spin();
-//
+#include "Geometry.h"
+class Transform {
+public:
+Geometry::Ptr geomtool;
+Transform();
+//TODO    move, rotate, decompose
+};
 
 
-//    PointCloudPtr cloud(new PointCloud);
-//    data.ReadPts("damaged beam.pts",cloud);
-//    viewer.addPointCloudColor<pcl::PointXYZ>(cloud);
-
-//    data.ReadIfc("house.ifc");
-}
+#endif //EASTBIM_TRANSFORM_H

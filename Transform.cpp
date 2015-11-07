@@ -22,39 +22,11 @@
 # **************************************************************************/
 
 //
-// Created by ling on 19/10/15.
+// Created by ling on 07/11/15.
 //
 
-#include "IO.h"
-#include "Visualizer.h"
-#include "Topology.h"
+#include "Transform.h"
 
-using namespace std;
-int main (int argc, char** argv)
-{
-    IO data;
-    boost::ptr_vector<string> ifcfiles;
-    data.GetIfcFiles(ifcfiles);
-    BIM::Ptr bim(new BIM);
-    data.LoadIfcModel(ifcfiles.at(0),bim);
+Transform::Transform(): geomtool(new Geometry){
 
-    Topology::Ptr topo(new Topology);
-    cout<<topo->Collide(bim->elements.at(0).shape,bim->elements.at(0).shape);
-
-//    Visualizer viewer;
-//    for (BIM::Element_set::iterator it=bim->elements.begin();it!=bim->elements.end();++it){
-//        Box box;
-//        it->GetMVBB(box);
-//        viewer.AddTopoShapeWithProperty(it->shape);
-//        viewer.AddBoxWithProperty(box,255);
-//    }
-//    viewer.spin();
-//
-
-
-//    PointCloudPtr cloud(new PointCloud);
-//    data.ReadPts("damaged beam.pts",cloud);
-//    viewer.addPointCloudColor<pcl::PointXYZ>(cloud);
-
-//    data.ReadIfc("house.ifc");
 }

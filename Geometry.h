@@ -45,6 +45,19 @@
 #include <gp_Pnt.hxx>
 #include <BRep_Tool.hxx>
 #include "ApproxMVBB/ComputeApproxMVBB.hpp"
+#include <TColgp_Array1OfPnt.hxx>
+#include <Poly_Array1OfTriangle.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
+#include <ifcgeom/IfcGeom.h>
+#include <Poly_Triangulation.hxx>
+
+#include <fcl/shape/geometric_shapes.h>
+#include <fcl/shape/geometric_shape_to_BVH_model.h>
+//#include <fcl/shape/>
+//#include <fcl/shape/geometric_shapes_utility.h>
+//#include <fcl/narrowphase/narrowphase.h>
+//#include <fcl/collision.h>
+//#include <boost/foreach.hpp>
 
 using namespace std;
 class Box {
@@ -77,6 +90,11 @@ public:
     void Shape2Polygons(const TopoDS_Shape& s, PolySet& polys);
     bool GetMVBB(const VertexSet &vertices, Box& box);
     bool GetMVBB(const TopoDS_Shape &brep, Box& box);
+
+    typedef fcl::BVHModel<fcl::OBBRSS> BVHMesh;
+    typedef boost::shared_ptr<BVHMesh> BVHMeshPtr;
+    void Face2BVHMesh(const TopoDS_Face& f, BVHMeshPtr model);
+    void Shape2BVHMesh(const TopoDS_Shape& shape, BVHMeshPtr model);
 };
 
 

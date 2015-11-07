@@ -22,39 +22,24 @@
 # **************************************************************************/
 
 //
-// Created by ling on 19/10/15.
+// Created by ling on 07/11/15.
 //
 
-#include "IO.h"
-#include "Visualizer.h"
-#include "Topology.h"
+//TODO collison test after transform
 
-using namespace std;
-int main (int argc, char** argv)
-{
-    IO data;
-    boost::ptr_vector<string> ifcfiles;
-    data.GetIfcFiles(ifcfiles);
-    BIM::Ptr bim(new BIM);
-    data.LoadIfcModel(ifcfiles.at(0),bim);
+#ifndef EASTBIM_TOPOLOGY_H
+#define EASTBIM_TOPOLOGY_H
 
-    Topology::Ptr topo(new Topology);
-    cout<<topo->Collide(bim->elements.at(0).shape,bim->elements.at(0).shape);
-
-//    Visualizer viewer;
-//    for (BIM::Element_set::iterator it=bim->elements.begin();it!=bim->elements.end();++it){
-//        Box box;
-//        it->GetMVBB(box);
-//        viewer.AddTopoShapeWithProperty(it->shape);
-//        viewer.AddBoxWithProperty(box,255);
-//    }
-//    viewer.spin();
-//
+#include "Geometry.h"
+#include <fcl/collision_object.h>
+#include <fcl/collision.h>
+class Topology {
+public:
+    typedef boost::shared_ptr<Topology> Ptr;
+    Geometry::Ptr geomtool;
+    Topology();
+    bool Collide(const TopoDS_Shape& shape1,const TopoDS_Shape& shape2);
+};
 
 
-//    PointCloudPtr cloud(new PointCloud);
-//    data.ReadPts("damaged beam.pts",cloud);
-//    viewer.addPointCloudColor<pcl::PointXYZ>(cloud);
-
-//    data.ReadIfc("house.ifc");
-}
+#endif //EASTBIM_TOPOLOGY_H
