@@ -31,9 +31,14 @@
 #include "Geometry.h"
 class Transform {
 public:
-Geometry::Ptr geomtool;
-Transform();
-//TODO    move, rotate, decompose
+    Geometry::Ptr geomtool;
+    typedef boost::shared_ptr<Transform> Ptr;
+    Transform();
+//TODO   decompose
+    void Translate(TopoDS_Shape& shape, const Eigen::Vector3f& t);
+    void Rotate(TopoDS_Shape& shape, const Eigen::Matrix3f& r);
+    void Move(TopoDS_Shape& shape, const Eigen::Affine3f& m);
+    void Rotate(TopoDS_Shape &shape, const Eigen::Quaternionf &r);
 };
 
 

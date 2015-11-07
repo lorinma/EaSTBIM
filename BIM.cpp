@@ -46,6 +46,7 @@ BldElement::BldElement(int id, string guid, string name, string type,
 //        FIXME are the shells in the shape fixed by ifcopenshell?
         builder.Add(shape,brep);
     }
+    shape_original=shape;
 }
 
 bool BldElement::GetShells(Geometry::ShellSet &shells) {

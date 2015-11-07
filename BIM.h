@@ -41,6 +41,7 @@ public:
     string guid;
     string name;
     string type;
+    TopoDS_Compound shape_original;
     TopoDS_Compound shape;
     BldElement();
     BldElement(int id, string guid, string name, string type, const IfcGeomObjects::IfcGeomShapeModelObject* o);

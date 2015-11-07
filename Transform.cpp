@@ -25,8 +25,35 @@
 // Created by ling on 07/11/15.
 //
 
+#include <gp_Quaternion.hxx>
 #include "Transform.h"
 
 Transform::Transform(): geomtool(new Geometry){
 
+}
+
+void Transform::Translate(TopoDS_Shape &shape, const Eigen::Vector3f &t) {
+    gp_Trsf trsf;
+    trsf.SetTranslation(gp_Vec(t[0],t[1],t[2]));
+    shape.Move(trsf);
+}
+
+void Transform::Move(TopoDS_Shape &shape, const Eigen::Affine3f &m) {
+    gp_Trsf trsf;
+    Eigen::Vector3f t = m.translation();
+    Eigen::Quaternionf r = Eigen::Quaternionf(m.rotation());
+    trsf.SetTranslation(gp_Vec(t[0],t[1],t[2]));
+    trsf.SetRotation(gp_Quaternion(r.x(),r.y(),r.z(),r.w()));
+    shape.Move(trsf);
+}
+
+void Transform::Rotate(TopoDS_Shape &shape, const Eigen::Quaternionf &r) {
+    gp_Trsf trsf;
+    trsf.SetRotation(gp_Quaternion(r.x(),r.y(),r.z(),r.w()));
+    shape.Move(trsf);
+}
+
+void Transform::Rotate(TopoDS_Shape &shape, const Eigen::Matrix3f &r) {
+    Eigen::Quaternionf q = Eigen::Quaternionf(r);
+    Rotate(shape,q);
 }

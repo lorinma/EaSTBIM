@@ -31,21 +31,28 @@ Topology::Topology():geomtool(new Geometry) {
 
 }
 
+//FIXME collision of mesh doesn't works well?
+//TODO test ifcopenshell export obj and load obj
 bool Topology::Collide(const TopoDS_Shape &shape1, const TopoDS_Shape &shape2) {
     Geometry::BVHMeshPtr m1(new Geometry::BVHMesh);
     Geometry::BVHMeshPtr m2(new Geometry::BVHMesh);
+    m1->bv_splitter.reset(new fcl::BVSplitter<fcl::OBBRSS>(fcl::SPLIT_METHOD_MEAN));
+    m2->bv_splitter.reset(new fcl::BVSplitter<fcl::OBBRSS>(fcl::SPLIT_METHOD_MEAN));
     geomtool->Shape2BVHMesh(shape1,m1);
     geomtool->Shape2BVHMesh(shape2,m2);
-    // Given two objects o1 and o2
-    fcl::CollisionObject* o1(new fcl::CollisionObject(m1));
-    fcl::CollisionObject* o2(new fcl::CollisionObject(m2));
+
 // set the collision request structure, here we just use the default setting
     fcl::CollisionRequest request;
 // result will be returned via the collision result structure
     fcl::CollisionResult result;
+    fcl::MeshCollisionTraversalNode<fcl::OBBRSS> node;
+    fcl::Transform3f pose1, pose2;
+    if(!fcl::initialize<fcl::OBBRSS>(node, *m1, pose1, *m2, pose2, request, result))
+        std::cout << "initialize error" << std::endl;
 // perform collision test
-    fcl::collide(o1, o2, request, result);
-    return result.isCollision();
+    fcl::collide(&node);
+    cout<<"is collision?:"<<result.isCollision()<<"  contacts:"<<result.numContacts();
+    return result.numContacts()>0;
 }
 
 

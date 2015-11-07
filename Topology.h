@@ -31,8 +31,14 @@
 #define EASTBIM_TOPOLOGY_H
 
 #include "Geometry.h"
-#include <fcl/collision_object.h>
+//#include <fcl/collision_object.h>
+#include <fcl/collision_node.h>
 #include <fcl/collision.h>
+#include "fcl/BV/BV.h"
+#include "fcl/shape/geometric_shapes.h"
+#include "fcl/narrowphase/narrowphase.h"
+#include "fcl/traversal/traversal_node_bvhs.h"
+#include "fcl/traversal/traversal_node_setup.h"
 class Topology {
 public:
     typedef boost::shared_ptr<Topology> Ptr;

@@ -28,6 +28,7 @@
 #include "IO.h"
 #include "Visualizer.h"
 #include "Topology.h"
+#include "Transform.h"
 
 using namespace std;
 int main (int argc, char** argv)
@@ -38,19 +39,25 @@ int main (int argc, char** argv)
     BIM::Ptr bim(new BIM);
     data.LoadIfcModel(ifcfiles.at(0),bim);
 
+    Transform::Ptr move(new Transform);
+    move->Translate(bim->elements.at(0).shape,Eigen::Vector3f(1,1,0));
+
+
     Topology::Ptr topo(new Topology);
-    cout<<topo->Collide(bim->elements.at(0).shape,bim->elements.at(0).shape);
+    cout<<topo->Collide(bim->elements.at(0).shape,bim->elements.at(0).shape_original);
 
 //    Visualizer viewer;
-//    for (BIM::Element_set::iterator it=bim->elements.begin();it!=bim->elements.end();++it){
-//        Box box;
-//        it->GetMVBB(box);
-//        viewer.AddTopoShapeWithProperty(it->shape);
-//        viewer.AddBoxWithProperty(box,255);
-//    }
+////    for (BIM::Element_set::iterator it=bim->elements.begin();it!=bim->elements.end();++it){
+////        Box box;
+////        it->GetMVBB(box);
+////        viewer.AddTopoShapeWithProperty(it->shape);
+////        viewer.AddBoxWithProperty(box,255);
+////    }
+////    viewer.spin();
+////
+//viewer.AddTopoShapeWithProperty(bim->elements.at(0).shape);
+//    viewer.AddTopoShapeWithProperty(bim->elements.at(0).shape_original,255);
 //    viewer.spin();
-//
-
 
 //    PointCloudPtr cloud(new PointCloud);
 //    data.ReadPts("damaged beam.pts",cloud);
